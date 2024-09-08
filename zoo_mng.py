@@ -14,42 +14,26 @@ class Zoo:
         self.animals = {}
 
     def add_animal(self, anm):
-
-        try:
+        if not isinstance(anm, Animal):
+            raise ValueError(f"{anm} is not an instance of Animals")
+        else:
             if anm.species not in self.animals:
                 self.animals[anm.species] = []
-                self.animals[anm.species].append(anm)
-            else:
-                self.animals[anm.species].append(anm)
-        except AttributeError:
-            print("The animal you want to add has no object in the animals")
+            self.animals[anm.species].append(anm)
 
     def get_animals_by_species(self, spc):
-        name_list = []
         if spc in self.animals:
-            dummy_list = self.animals[spc]
-            for items in dummy_list:
-                name_list.append(items.name)
-            return name_list
+            return [animal.name for animal in self.animals[spc]]
         else:
-            try:
-                raise ValueError("The animal is not found")
-            except ValueError as e:
-                print(e)
+            raise ValueError(f"The animal or the species is not found{spc})")
 
     def remove_animal(self, anm_name):
-        count = 0
-        for item in self.animals:
-            for i in self.animals[item]:
-                if i.name == anm_name:
-                    count += 1
-                    index_i = self.animals[item].index(i)
-                    self.animals[item].pop(index_i)
-        if not count:
-            try:
-                raise ValueError(f"{anm_name} animal not found")
-            except ValueError as e:
-                print(e)
+        for spec,animal_list in self.animals.items():
+            for i, animal in enumerate(animal_list):
+                if anm_name == animal.name:
+                    del self.animals[spec][i]
+                    return
+        raise ValueError(f"This animal {anm_name} not found to remove")
 
 
 class Mammal(Animal):
@@ -58,7 +42,7 @@ class Mammal(Animal):
         self.fur_color = fur_color
 
     def __str__(self):
-        return f"{self.name}, Fur Color: {self.fur_color}"
+        return f"{super().__str__()}, Fur Color: {self.fur_color}"
 
 
 class Bird(Animal):
@@ -67,7 +51,7 @@ class Bird(Animal):
         self.wing_span = wing_span
 
     def __str__(self):
-        return f"{self.name}, Wing Span: {self.wing_span}"
+        return f"{super().__str__()}, Wing Span: {self.wing_span}"
 
 
 # Create some animals
@@ -76,6 +60,7 @@ eagle = Bird(name="Eddy", species="Eagle", age=3, diet="Carnivore", wing_span=2.
 zebra = Mammal(name="Zara", species="Zebra", age=2, diet="Herbivore", fur_color="Striped")
 shir = Mammal(name="shir", species="Lion", age=5, diet="Carnivore", fur_color="Golden")
 
+print(shir)
 # Create a zoo and add animals to it
 zoo = Zoo()
 zoo.add_animal(lion)
@@ -109,3 +94,5 @@ try:
     zoo.add_animal("NotAnAnimal")
 except ValueError as e:
     print(e)
+
+
